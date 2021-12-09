@@ -1,14 +1,22 @@
-import './App.css';
 import {BrowserRouterProps, Routes, Route, Link} from "react-router-dom";
-import ProductInfo from "./Components/ProductInfo";
-import FormBuy from "./Components/BuyForm/FormBuy";
+import ProductBuy from "./Components/ProductBuy/ProductBuy";
+import './App.css';
+import React from "react";
+import BoughtProduct from "./Components/BoughtProduct/BoughtProduct";
 
 function App() {
     return (
-        <div className="App h-100 d-flex">
-            <ProductInfo/>
-            <FormBuy/>
-        </div>
+        <>
+            <Routes>
+                <Route exact path={'/'} element={
+                    <div className="App h-100 d-flex">
+                        <ProductBuy/>
+                    </div>
+                }/>
+                <Route path={'/boughtProduct'} element={<BoughtProduct/>}/>
+            </Routes>
+
+        </>
     );
 }
 
