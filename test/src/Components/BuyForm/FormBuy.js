@@ -1,62 +1,36 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Cards from "react-credit-cards";
-import {Button} from "antd";
-import './FormBuy.css';
+import {Form, Input, Button} from "antd";
 import validator from "validator";
-import {Link, Navigate} from "react-router-dom";
+import {Link} from "react-router-dom";
+import {connect} from "react-redux";
+import './FormBuy.css';
 
-export default function FormBuy(){
-    const [data, setData] = useState({
-        cvc: "",
-        expiry: "",
-        name: "",
-        number: ""
-    })
 
+function FormBuy(props){
     const handleInputChange = (e) => {
 
         if (e.target.name === 'cvc'){
-            if (e.target.value.length < 4)  {
-                setData({
-                    ...data,
-                    [e.target.name]: e.target.value
-                })
-            }
-            else {
-                alert('Not Validated CVC!');
-            }
-
+            e.target.value.length < 4 ? props.onCVC(e.target.value) : alert('Not Validated CVC!');
         }
         if (e.target.name === 'number') {
-            setData({
-                ...data,
-                [e.target.name]: (e.target.value.replace(/\W/gi, '').replace(/(.{4})/g, '$1 ').replace(/[A-Za-z]| /g, ''))
-
-            });
+            let number = e.target.value.replace(/\W/gi, '').replace(/(.{4})/g, '$1 ').replace(/[A-Za-z]| /g, '');
+            number ? props.onNumber(number): alert('Not Validated Number! Type numbers');
         }
         if (e.target.name === 'name'){
-
-            e.target.value.match(/^[a-zA-Z\s]*$/) ? setData({
-                ...data,
-                [e.target.name]: e.target.value
-            }) : alert('Invalid! Enter the letters!');
+            e.target.value.match(/^[a-zA-Z\s]*$/) ? props.onName(e.target.value) : alert('Invalid! Enter the letters!');
         }
         if (e.target.name === 'expiry'){
             let today = new Date();
             let target = new Date(e.target.value);
             let month = target.getMonth() + 1;
             let year = target.getFullYear();
-            today < target ? setData({
-                ...data,
-                [e.target.name]: year.toString().substr(2) + '/' + month + '/' + target.getDate()
-                }) : alert('Not validated Expiration Date! CHANGE IT!');
-            console.log(target);
-            console.log(month, year)
+            today < target ? props.onExpiry(year.toString().substr(2) + '/' + month + '/' + target.getDate()) : alert('Not validated Expiration Date! CHANGE IT!');
         }
     }
 
     const checkBuy = () => {
-        if (data.name !== '' && data.cvc !== '' && data.number !== '' && data.expiry !== '') {
+        if (props.name !== '' && props.cvc !== '' && props.number !== '' && props.expiry !== '') {
             return true
         }
         else {
@@ -68,44 +42,77 @@ export default function FormBuy(){
     return (
         <div id={'PaymentForm'}>
             <Cards
-                cvc={data.cvc}
-                expiry={data.expiry}
-                focus={data.focus}
-                name={data.name}
-                number={data.number}
+                cvc={props.cvc}
+                expiry={props.expiry}
+                focus={props.focus}
+                name={props.name}
+                number={props.number}
             />
-            <form action={""}>
-                <input
+            <Form action={""}>
+                <Input
                     type={"text"}
                     name={"number"}
                     placeholder={"Card Number"}
-                    onChange={(event) => handleInputChange(event)}
+                    onChange={
+                        (event) => handleInputChange(event)
+                    }
+                    required
                 />
-                <p>Valid Credit Card {!validator.isCreditCard(data.number.replace(/\s/g, ''))}</p>
-                <input
+                <p>Valid Credit Card {!validator.isCreditCard(props.number.replace(/\s/g, ''))}</p>
+                <Input
                     type={"number"}
                     name={"cvc"}
                     placeholder={"CVC"}
-                    // value={data.cvc}
                     onChange={(event) => {
                         handleInputChange(event)
                     }}
                 />
-                <input
+                <Input
                     type={"text"}
                     name={"name"}
                     placeholder={"Your Name"}
-                    // value={data.name}
                     onChange={(event) => handleInputChange(event)}
+                    required
                 />
-                <input
+                <Input
                     type={"date"}
                     name={"expiry"}
                     placeholder={"Expire Date"}
                     onChange={(event) => handleInputChange(event)}
+                    required
                 />
-            </form>
+            </Form>
             <Link to={'/boughtProduct'} type={'submit'} className={'btn btn-primary'}>Submit</Link>
+
         </div>
     )
 }
+
+
+function mapStateToProps(state){
+    return {
+        cvc: state.cvc,
+        expiry: state.expiry,
+        name: state.name,
+        number: state.number
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return {
+        onCVC: (cvc) => {
+            dispatch( {type: 'CVC', value: cvc})
+        },
+        onExpiry: (expiry) => {
+            dispatch({type: 'Expiry', value: expiry})
+        },
+        onName: (name) => {
+            dispatch( {type: 'Name', value: name} )
+        },
+        onNumber: (number) => {
+            dispatch( {type: 'Number', value: number} )
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FormBuy);

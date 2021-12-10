@@ -1,7 +1,11 @@
 import React from 'react';
+import {Typography} from "antd";
 import './ProductInfo.css';
 
 export default function ProductInfo(){
+
+    const {Title, Paragraph} = Typography;
+
     return  (
      <div className={'d-flex w-50 justify-content-around align-items-center mt-5 pt-4 margin-top-100'}>
          <div className={'w-50'}>
@@ -12,12 +16,12 @@ export default function ProductInfo(){
              <figure>new iPhone 13</figure>
          </div>
          <div className={'w-50'}>
-             <h3>iPhone 13</h3>
-             <p>Price: $500</p>
-             <p>The iPhone 13 has a 6.1-inch screen, and the iPhone 13 mini has a 5.4-inch screen.
-                 They both use Apple's Ceramic Shield cover glass, which adds improved drop protection.</p>
-             <p>The Super Retina XDR display is 28% brighter up to 800 nits for regular content, 1200 nits for HDR.
-                 In addition, the P3 color gamut and high pixel density mean text will pop, and photos and videos will appear sharper.</p>
+             <Title level={3}>iPhone 13</Title>
+             <Paragraph>Price: $500</Paragraph>
+             <Paragraph>The iPhone 13 has a 6.1-inch screen, and the iPhone 13 mini has a 5.4-inch screen.
+                 They both use Apple's Ceramic Shield cover glass, which adds improved drop protection.</Paragraph>
+             <Paragraph>The Super Retina XDR display is 28% brighter up to 800 nits for regular content, 1200 nits for HDR.
+                 In addition, the P3 color gamut and high pixel density mean text will pop, and photos and videos will appear sharper.</Paragraph>
          </div>
      </div>
     )
