@@ -1,6 +1,6 @@
 import React from 'react';
 import {Typography, Divider} from "antd";
-import ProductInfo from "../ProductInfo";
+import ProductInfo from "../ProductInfo/ProductInfo";
 
 export default function BoughtProduct(){
 
